@@ -10,13 +10,13 @@ namespace Strategies
         [Connection(ConnectionPointType.In, "<int> Target count")]
         public GenericNode<int> TargetsCount;
 
-        [Connection(ConnectionPointType.In, "<int> Point of cast")]
+        [Connection(ConnectionPointType.In, "<Vector3> Point of cast")]
         public GenericNode<Vector3> PointOfCast;
 
-        [Connection(ConnectionPointType.In, "<int> Radius of Cast")]
+        [Connection(ConnectionPointType.In, "<float> Radius of cast")]
         public GenericNode<float> RadiusOfCast;
 
-        public override string TitleOfNode { get; } = "GetActorsBySphereCast";
+        public override string TitleOfNode { get; } = "GetEntitiesBySphereCast";
 
         [Connection(ConnectionPointType.Out, "HECSList<Entity> Out")]
         public BaseDecisionNode Out;
