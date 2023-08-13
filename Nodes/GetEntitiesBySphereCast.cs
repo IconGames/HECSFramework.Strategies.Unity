@@ -8,6 +8,9 @@ namespace Strategies
     [Documentation(Doc.Strategy, Doc.UniversalNodes, Doc.HECS, "this node gather spherecast result to hecs list")]
     public class GetEntitiesBySphereCast : GenericNode<HECSList<Entity>>
     {
+        [Connection(ConnectionPointType.In, "<Filter> optional filter")]
+        public GenericNode<FilterNode> Filter;
+
         [Connection(ConnectionPointType.In, "<int> Target count")]
         public GenericNode<int> TargetsCount;
 
@@ -41,7 +44,19 @@ namespace Strategies
                 {
                     if (actor.Entity.IsAlive())
                     {
-                        context.Entities.Add(actor.Entity);
+                        if (Filter != null)
+                        {
+                            var filter = Filter.Value(entity);
+
+                            if (actor.Entity.ContainsMask(filter.Include) && !actor.Entity.ContainsMask(filter.Exclude))
+                            {
+                                context.Entities.Add(actor.Entity);
+                            }
+                        }
+                        else
+                        {
+                            context.Entities.Add(actor.Entity);
+                        }
                     }
                 }
             }
