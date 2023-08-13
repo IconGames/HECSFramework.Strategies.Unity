@@ -1,3 +1,4 @@
+using Components;
 using HECSFramework.Core;
 using Helpers;
 using UnityEngine;
@@ -46,21 +47,6 @@ namespace Strategies
             }
 
             return context.Entities;
-        }
-    }
-
-    public sealed class SphereCastContext : BaseComponent
-    {
-        public HECSList<Entity> Entities = new HECSList<Entity>(16);
-        public RaycastHit[] RaycastHits = new RaycastHit[16];
-
-        public void CheckCount(int count) 
-        { 
-            if (RaycastHits.Length < count)
-            {
-                Entities = new HECSList<Entity>(count);
-                RaycastHits = new RaycastHit[count];
-            }
         }
     }
 }
