@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Strategies
 {
     [Documentation(Doc.Strategy, Doc.UniversalNodes, Doc.HECS, "this node gather spherecast result to hecs list")]
-    public class GetEntitiesBySphereCast : GenericNode<HECSList<Entity>>
+    public class GetEntitiesOverlapSphereCast : GenericNode<HECSList<Entity>>
     {
         [Connection(ConnectionPointType.In, "<Filter> optional filter")]
         public GenericNode<FilterNode> Filter;
@@ -14,19 +14,16 @@ namespace Strategies
         [Connection(ConnectionPointType.In, "<int> Target count")]
         public GenericNode<int> TargetsCount;
 
-        [Connection(ConnectionPointType.In, "<Vector3> Direction")]
-        public GenericNode<Vector3> Direction;
-
         [Connection(ConnectionPointType.In, "<Vector3> Point of cast")]
         public GenericNode<Vector3> PointOfCast;
 
         [Connection(ConnectionPointType.In, "<float> Radius of cast")]
         public GenericNode<float> RadiusOfCast;
 
+        public override string TitleOfNode { get; } = "GetEntitiesOverlapSphereCast";
 
         [Connection(ConnectionPointType.Out, "HECSList<Entity> Out")]
         public BaseDecisionNode Out;
-        public override string TitleOfNode { get; } = "GetEntitiesBySphereCast";
 
 
         public override void Execute(Entity entity)
@@ -35,15 +32,15 @@ namespace Strategies
 
         public override HECSList<Entity> Value(Entity entity)
         {
-            var context = entity.GetOrAddComponent<SphereCastContext>();
+            var context = entity.GetOrAddComponent<OverlapSphereCastContext>();
             context.Entities.ClearFast();
             context.CheckCount(TargetsCount.Value(entity));
-            
-            var count = Physics.SphereCastNonAlloc(PointOfCast.Value(entity), RadiusOfCast.Value(entity), Direction.Value(entity), context.RaycastHits);
+
+            var count = Physics.OverlapSphereNonAlloc(PointOfCast.Value(entity), RadiusOfCast.Value(entity), context.Colliders);
 
             for (int i = 0; i < count; i++)
             {
-                if (context.RaycastHits[i].collider.TryGetActorFromCollision(out var actor))
+                if (context.Colliders[i].TryGetActorFromCollision(out var actor))
                 {
                     if (actor.Entity.IsAlive())
                     {
