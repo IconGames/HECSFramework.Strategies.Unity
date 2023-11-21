@@ -151,7 +151,7 @@ namespace HECSFramework.Unity
             body.Tree.Add(new LeftScopeSyntax(2)); //{{{
             body.Tree.Add(new RightScopeSyntax(2)); //}}}
 
-            fieldsInput.Tree.Add(GetOutField(new CreateFieldInfo { Name = "Out", ConnectionPointType = ConnectionPointType.Out, Type = $"{GenericType}" }));
+            fieldsOut.Tree.Add(GetOutField(new CreateFieldInfo { Name = "Out", ConnectionPointType = ConnectionPointType.Out, Type = $"{GenericType}" }));
         }
 
         private void GetInterDecision(string name, out ISyntax node, out ISyntax fieldsInput, out ISyntax fieldsOut, out ISyntax body)

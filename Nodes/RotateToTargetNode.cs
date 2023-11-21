@@ -40,7 +40,7 @@ namespace Strategies
             Next.Execute(entity);
         }
 
-        [GetConvertNodeAttribue]
+        [GetConvertNodeAttribute]
         public bool IsRotatingComplete(Entity entity)
         {
             var targetTransform = Target.Value(entity).GetComponent<UnityTransformComponent>().Transform;

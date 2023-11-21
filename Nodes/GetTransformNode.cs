@@ -25,7 +25,7 @@ namespace Strategies
             return needed.GetComponent<UnityTransformComponent>().Transform;
         }
 
-        [GetConvertNodeAttribue]
+        [GetConvertNodeAttribute]
         public Vector3 Position(Entity entity)
         {
             return Value(entity).position;
