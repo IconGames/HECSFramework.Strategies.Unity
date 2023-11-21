@@ -34,19 +34,20 @@ namespace HECSFramework.Unity
                 return;
 
             ISyntax treeSyntaxNode = default;
-            ISyntax fields = default;
+            ISyntax fieldsInput = default;
+            ISyntax fieldsOut = default;
             ISyntax body = default;
 
             switch (NodeType)
             {
                 case NodeType.Dilemma:
-                    GetDillema(NodeName, out treeSyntaxNode, out fields, out body);
+                    GetDillema(NodeName, out treeSyntaxNode, out fieldsInput, out fieldsOut, out body);
                     break;
                 case NodeType.InterDecision:
-                    GetInterDecision(NodeName, out treeSyntaxNode, out fields, out body);
+                    GetInterDecision(NodeName, out treeSyntaxNode, out fieldsInput, out fieldsOut, out body);
                     break;
                 case NodeType.GenericNode:
-                    GetGenericNode(NodeName, out treeSyntaxNode, out fields, out body);
+                    GetGenericNode(NodeName, out treeSyntaxNode, out fieldsInput, out fieldsOut, out body);
                     break;
             }
 
@@ -55,10 +56,10 @@ namespace HECSFramework.Unity
                 switch (f.ConnectionPointType)
                 {
                     case ConnectionPointType.In:
-                        fields.Tree.Add(GetInputField(f));
+                        fieldsInput.Tree.Add(GetInputField(f));
                         break;
                     case ConnectionPointType.Out:
-                        fields.Tree.Add(GetOutField(f));
+                        fieldsOut.Tree.Add(GetOutField(f));
                         break;
                 }
             }
@@ -83,10 +84,11 @@ namespace HECSFramework.Unity
             return tree;
         }
 
-        private void GetDillema(string name, out ISyntax node, out ISyntax fields, out ISyntax body)
+        private void GetDillema(string name, out ISyntax node, out ISyntax fieldsInput, out ISyntax fieldsOut, out ISyntax body)
         {
             node = new TreeSyntaxNode();
-            fields = new TreeSyntaxNode();
+            fieldsInput = new TreeSyntaxNode();
+            fieldsOut = new TreeSyntaxNode();
             body = new TreeSyntaxNode();
 
             node.Tree.Add(new UsingSyntax("HECSFramework.Core", 1));
@@ -95,7 +97,8 @@ namespace HECSFramework.Unity
             node.Tree.Add(new TabSimpleSyntax(1, $"[Documentation(Doc.Strategy, {CParse.Quote}{CParse.Quote})]"));
             node.Tree.Add(new TabSimpleSyntax(1, $"public class {name} : DilemmaDecision"));
             node.Tree.Add(new LeftScopeSyntax(1));//{{
-            node.Tree.Add(fields);
+            node.Tree.Add(fieldsInput);
+            node.Tree.Add(fieldsOut);
             node.Tree.Add(new TabSimpleSyntax(2, $"public override string TitleOfNode {{ get; }} = {CParse.Quote}{name}{CParse.Quote};"));
             node.Tree.Add(body);
             node.Tree.Add(new RightScopeSyntax(1));//}}
@@ -120,10 +123,11 @@ namespace HECSFramework.Unity
 
         }
 
-        private void GetGenericNode(string name, out ISyntax node, out ISyntax fields, out ISyntax body)
+        private void GetGenericNode(string name, out ISyntax node, out ISyntax fieldsInput, out ISyntax fieldsOut, out ISyntax body)
         {
             node = new TreeSyntaxNode();
-            fields = new TreeSyntaxNode();
+            fieldsInput = new TreeSyntaxNode();
+            fieldsOut = new TreeSyntaxNode();
             body = new TreeSyntaxNode();
 
             node.Tree.Add(new UsingSyntax("HECSFramework.Core", 1));
@@ -132,13 +136,14 @@ namespace HECSFramework.Unity
             node.Tree.Add(new TabSimpleSyntax(1, $"[Documentation(Doc.Strategy, {CParse.Quote}{CParse.Quote})]"));
             node.Tree.Add(new TabSimpleSyntax(1, $"public class {name} : GenericNode<{GenericType}>"));
             node.Tree.Add(new LeftScopeSyntax(1));//{{
-            node.Tree.Add(fields);
+            node.Tree.Add(fieldsInput);
+            node.Tree.Add(fieldsOut);
             node.Tree.Add(new TabSimpleSyntax(2, $"public override string TitleOfNode {{ get; }} = {CParse.Quote}{name}{CParse.Quote};"));
             node.Tree.Add(body);
             node.Tree.Add(new RightScopeSyntax(1));//}}
             node.Tree.Add(new RightScopeSyntax());//}
 
-            body.AddUnique(new TabSimpleSyntax(2, " public override void Execute(Entity entity)"));
+            body.AddUnique(new TabSimpleSyntax(2, "public override void Execute(Entity entity)"));
             body.Tree.Add(new LeftScopeSyntax(2)); //{{{
             body.Tree.Add(new RightScopeSyntax(2)); //}}}
 
@@ -146,13 +151,14 @@ namespace HECSFramework.Unity
             body.Tree.Add(new LeftScopeSyntax(2)); //{{{
             body.Tree.Add(new RightScopeSyntax(2)); //}}}
 
-            fields.Tree.Add(GetOutField(new CreateFieldInfo { Name = "Out", ConnectionPointType = ConnectionPointType.Out, Type = $"{GenericType}" }));
+            fieldsInput.Tree.Add(GetOutField(new CreateFieldInfo { Name = "Out", ConnectionPointType = ConnectionPointType.Out, Type = $"{GenericType}" }));
         }
 
-        private void GetInterDecision(string name, out ISyntax node, out ISyntax fields, out ISyntax body)
+        private void GetInterDecision(string name, out ISyntax node, out ISyntax fieldsInput, out ISyntax fieldsOut, out ISyntax body)
         {
             node = new TreeSyntaxNode();
-            fields = new TreeSyntaxNode();
+            fieldsInput = new TreeSyntaxNode();
+            fieldsOut = new TreeSyntaxNode();
             body = new TreeSyntaxNode();
 
             node.Tree.Add(new UsingSyntax("HECSFramework.Core", 1));
@@ -161,7 +167,8 @@ namespace HECSFramework.Unity
             node.Tree.Add(new TabSimpleSyntax(1, $"[Documentation(Doc.Strategy, {CParse.Quote}{CParse.Quote})]"));
             node.Tree.Add(new TabSimpleSyntax(1, $"public class {name} : InterDecision"));
             node.Tree.Add(new LeftScopeSyntax(1));//{{
-            node.Tree.Add(fields);
+            node.Tree.Add(fieldsInput);
+            node.Tree.Add(fieldsOut);
             node.Tree.Add(new TabSimpleSyntax(2, $"public override string TitleOfNode {{ get; }} = {CParse.Quote}{name}{CParse.Quote};"));
             node.Tree.Add(body);
             node.Tree.Add(new RightScopeSyntax(1));//}}
