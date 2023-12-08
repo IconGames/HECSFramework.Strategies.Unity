@@ -1,5 +1,6 @@
 using Components;
 using HECSFramework.Core;
+using HECSFramework.Unity;
 using Helpers;
 using UnityEngine;
 
@@ -42,7 +43,7 @@ namespace Strategies
             {
                 if (context.Colliders[i].TryGetActorFromCollision(out var actor))
                 {
-                    if (actor.Entity.IsAlive())
+                    if (actor.IsAlive())
                     {
                         if (Filter != null)
                         {
