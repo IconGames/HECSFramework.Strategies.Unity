@@ -13,9 +13,6 @@ namespace Strategies
         [Connection(ConnectionPointType.In, "<Transform> TransformToRotate")]
         public GenericNode<Transform> TransformToRotate;
 
-        [Connection(ConnectionPointType.In, "<float> Rotation Speed")]
-        public GenericNode<float> RotationSpeed;
-
         [ExposeField]
         public bool FixYAxis = true;
 
