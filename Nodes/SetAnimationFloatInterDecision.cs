@@ -24,7 +24,7 @@ namespace Strategies
         {
             var animOwner = AnimatorOwner != null ? AnimatorOwner.Value(entity) : entity;
 
-            animOwner.GetComponent<AnimatorStateComponent>().State.SetFloat(AnimParameter, FloatValue.Value(entity), Force);
+            animOwner.GetComponent<AnimatorStateComponent>().State.SetFloat(AnimParameter, FloatValue.Value(entity), forceSet:Force);
             Next.Execute(entity);
         }
     }
